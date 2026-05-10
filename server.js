@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Sirvo la carpeta public para que se vea mi HTML y el estilo
+// Sirvo la carpeta public para que se vea mi HTML y el estilo visual
 app.use(express.static('public'));
 
 // Traigo mis archivos de rutas
@@ -19,6 +19,7 @@ const eventosRoutes = require('./routes/eventos');
 app.use('/api/auth', authRoutes);
 app.use('/api/eventos', eventosRoutes);
 
+// Configuro el puerto y arranco el servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor andando en el puerto ${PORT}`);
