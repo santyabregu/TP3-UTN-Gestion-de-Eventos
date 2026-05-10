@@ -6,16 +6,23 @@ const jwt = require('jsonwebtoken');
 exports.register = async (req, res) => {
     try {
         // Traigo todos los datos que el usuario pone en el formulario de registro
-        const {nombre, apellido, dni, email, password, calle, ciudad, localidad, telefono, rol } = req.body;
+        const {nombre, apellido, dni, email, password, calle, ciudad, localidad, telefono } = req.body;
         
         // Uso bcrypt para que la contraseña no se vea como texto normal en la base de datos
         // El "10" es el nivel de seguridad del hasheo
         const hashedPassword = await bcrypt.hash(password, 10);
         
+        // Si me registro con este mail, me doy permisos de administrador 
+        // directamente para no tener que tocar la base de datos a mano.
+        let rolAsignado = 'usuario';
+        if (email === 'admin123@gmail.com') {
+            rolAsignado = 'administrador';
+        }
+        
         // Inserto los datos en la tabla. Ojo: uso 'password_hash' que es el nombre de mi columna en SQL
         await db.query(
             'INSERT INTO usuarios (nombre, apellido, dni, email, password_hash, calle, ciudad, localidad, telefono, rol) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-            [nombre, apellido, dni, email, hashedPassword, calle, ciudad, localidad, telefono || '+54 ', rol || 'usuario']
+            [nombre, apellido, dni, email, hashedPassword, calle, ciudad, localidad, telefono || '+54 ', rolAsignado]
         );
 
         // Si todo salió bien, devuelvo este mensaje

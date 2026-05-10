@@ -42,6 +42,20 @@ function mostrarSeccionEventos(user) {
     // Pre-cargar datos en el menú de configuración
     document.getElementById('confEmail').value = user.email;
     document.getElementById('confTelefono').value = user.telefono;
+
+    // Acá agarro el token JWT, lo desarmo para ver qué rol tiene el usuario.
+    // Si dice 'administrador', le prendo el botón de crear evento, sino se lo dejo apagado.
+    const token = localStorage.getItem('token');
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            if (payload.rol === 'administrador') {
+                document.getElementById('btnCrearEvento').style.display = 'inline-block';
+            } else {
+                document.getElementById('btnCrearEvento').style.display = 'none';
+            }
+        } catch(e) {}
+    }
 }
 
 // LOGIN Y REGISTRO
@@ -94,7 +108,7 @@ function renderRegisterForm() {
                 <input type="text" id="regLocalidad" placeholder="Localidad" required>
             </div>
             <input type="text" id="regCalle" placeholder="Calle y Número" required>
-            <input type="email" id="regEmail" placeholder="Email" required>
+            <input type="email" id="regEmail" placeholder="Email (Usa admin123@gmail.com para ser admin)" required>
             <input type="password" id="regPass" placeholder="Contraseña" required>
             <button type="submit">Crear Cuenta</button>
         </form>
@@ -119,7 +133,7 @@ function renderRegisterForm() {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
         });
         if (res.ok) {
-            alert('¡Registro exitoso!');
+            alert('¡Registro exitoso! Ya puedes iniciar sesión.');
             renderLoginForm();
         } else alert('Error al registrar');
     });
@@ -145,7 +159,7 @@ function renderizarEventos(eventos) {
     lista.innerHTML = '';
     
     eventos.forEach(evento => {
-        const bg = `background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.9)), url('${evento.logo_url}');`;
+        const bg = `background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.9)), url('${evento.logo_url || "https://loremflickr.com/800/600/music"}');`;
         lista.innerHTML += `
             <div class="card" style="${bg}">
                 <div class="card-content">
@@ -247,6 +261,52 @@ async function confirmarCompra() {
         alert("Ocurrió un error de red al procesar tu reserva.");
     }
 }
+
+// --- CREAR EVENTOS ---
+function abrirModalCrear() {
+    document.getElementById('modalCrearEvento').style.display = 'flex';
+}
+
+document.getElementById('crearEventoForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Armo un objeto con todo lo que el admin puso en el formulario
+    const nuevoEvento = {
+        nombre: document.getElementById('nuevoNombre').value,
+        descripcion: document.getElementById('nuevoDesc').value,
+        id_categoria: 1, // Por defecto lo pongo en música para que sea más fácil
+        fecha: document.getElementById('nuevoFecha').value,
+        hora_inicio: document.getElementById('nuevoHora').value,
+        hora_fin: "23:59:00", 
+        lugar: document.getElementById('nuevoLugar').value,
+        precio: document.getElementById('nuevoPrecio').value,
+        capacidad_maxima: document.getElementById('nuevoCapacidad').value
+    };
+
+    try {
+        const res = await fetch('/api/eventos', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token') 
+            },
+            body: JSON.stringify(nuevoEvento)
+        });
+
+        if (res.ok) {
+            alert("¡Evento creado con éxito!");
+            cerrarModal('modalCrearEvento');
+            document.getElementById('crearEventoForm').reset();
+            fetchEventos(); // Cargo de nuevo las tarjetas así aparece el evento nuevo al instante
+        } else {
+            const data = await res.json();
+            alert("Error: " + data.error);
+        }
+    } catch (error) {
+        alert("Error de conexión al crear el evento.");
+    }
+});
+
 // CONFIGURAR CUENTA (GUARDAR CAMBIOS)
 document.getElementById('configForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -263,7 +323,7 @@ document.getElementById('configForm').addEventListener('submit', async (e) => {
             method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
         });
         if (res.ok) {
-            alert('¡Cuenta actualizada! Por seguridad, inicia sesión nuevamente.');
+            alert('¡Cuenta actualizada! Por favor, inicia sesión nuevamente.');
             logout();
         } else {
             alert('Error al actualizar cuenta');

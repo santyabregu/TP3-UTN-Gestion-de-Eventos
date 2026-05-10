@@ -40,6 +40,13 @@ exports.updateEvento = async (req, res) => {
 
 // Acá uso una TRANSACCIÓN (BEGIN/COMMIT). Si algo falla al crear, no se guarda nada a medias.
 exports.crearEvento = async (req, res) => {
+    
+    // Acá me fijo si el que quiere crear un evento es administrador.
+    // Si es un usuario normal (por ejemplo, alguien que intenta mandar la petición a la fuerza), lo reboto.
+    if (req.user.rol !== 'administrador') {
+        return res.status(403).json({ error: "Acceso denegado. Solo administradores pueden crear eventos." });
+    }
+
     const connection = await db.getConnection();
     try {
         await connection.beginTransaction();
@@ -85,6 +92,7 @@ exports.reservarEntrada = async (req, res) => {
         res.status(400).json({ error: "No hay capacidad suficiente para este evento" });
     }
 };
+
 // Función para borrar un evento (Requisito de borrado físico)
 exports.deleteEvento = async (req, res) => {
     try {

@@ -19,6 +19,9 @@
             <button onclick="filtrarEventos(5)">🎨 Arte</button>
             <button onclick="filtrarEventos(6)">👻 Terror</button>
         </div>
+        
+        <button id="btnCrearEvento" onclick="abrirModalCrear()" style="display: none; background: #e94560; color: white; border-radius: 5px; padding: 8px 15px; margin-right: 15px;">➕ Crear Evento</button>
+        
         <div class="nav-user" onclick="toggleUserMenu()">
             <span id="userNameDisplay">Usuario</span> 🔽
             <div id="userDropdown" class="dropdown-content" style="display: none;">
@@ -46,16 +49,13 @@
             <hr>
             <label>Cantidad de Entradas:</label>
             <input type="number" id="cantEntradas" min="1" max="10" value="1" onchange="calcularTotal()">
-            
             <label>Método de Pago:</label>
             <select id="metodoPago">
                 <option value="MercadoPago">MercadoPago</option>
                 <option value="Tarjeta">Tarjeta Crédito/Débito</option>
                 <option value="Transferencia">Transferencia Bancaria</option>
             </select>
-            
             <h3 class="total-price">Total a Pagar: $<span id="modalTotal"></span></h3>
-            
             <div class="modal-buttons">
                 <button onclick="confirmarCompra()">Confirmar Pago</button>
                 <button class="btn-cancelar" onclick="cerrarModal('modalCompra')">Cancelar</button>
@@ -63,7 +63,29 @@
         </div>
     </div>
 
-    <!-- MODAL DE CONFIGURAR CUENTA -->
+    <div id="modalCrearEvento" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>➕ Crear Nuevo Evento</h3>
+            <form id="crearEventoForm">
+                <input type="text" id="nuevoNombre" placeholder="Nombre del Evento" required>
+                <input type="text" id="nuevoDesc" placeholder="Descripción breve" required>
+                <div class="form-row">
+                    <input type="date" id="nuevoFecha" required>
+                    <input type="time" id="nuevoHora" required>
+                </div>
+                <input type="text" id="nuevoLugar" placeholder="Lugar (ej: Teatro Mercedes Sosa)" required>
+                <div class="form-row">
+                    <input type="number" id="nuevoPrecio" placeholder="Precio ($)" required>
+                    <input type="number" id="nuevoCapacidad" placeholder="Capacidad Máx" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit">Guardar Evento</button>
+                    <button type="button" class="btn-cancelar" onclick="cerrarModal('modalCrearEvento')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="modalConfig" class="modal" style="display: none;">
         <div class="modal-content">
             <h3>⚙️ Configurar Cuenta</h3>
@@ -74,7 +96,6 @@
                 <input type="text" id="confTelefono" required>
                 <label>Nueva Contraseña (opcional):</label>
                 <input type="password" id="confPass" placeholder="Dejar en blanco para no cambiar">
-                
                 <div class="modal-buttons">
                     <button type="submit">Guardar Cambios</button>
                     <button type="button" class="btn-cancelar" onclick="cerrarModal('modalConfig')">Cerrar</button>
@@ -83,9 +104,8 @@
         </div>
     </div>
 
-    <!-- BOTÓN Y VENTANITA DE SOPORTE TÉCNICO -->
+     <!-- BOTÓN Y VENTANITA DE SOPORTE TÉCNICO -->
     <div class="support-btn" onclick="toggleSoporte()">💬 Ayuda</div>
-    
     <div class="support-widget" id="supportWidget" style="display: none;">
         <div class="support-header">
             <h4>Soporte Técnico</h4>
@@ -93,18 +113,9 @@
         </div>
         <div class="support-body">
             <p style="margin-top: 0; font-weight: bold; color:#1a1a2e;">Preguntas Frecuentes:</p>
-            <details>
-                <summary>¿Cómo obtengo mi entrada?</summary>
-                <p>Al pagar, el sistema genera un Código VIP. Guárdalo y díctalo en la puerta de seguridad.</p>
-            </details>
-            <details>
-                <summary>¿Qué métodos de pago aceptan?</summary>
-                <p>Aceptamos MercadoPago, Tarjetas y Transferencias. El comprobante llega a tu email.</p>
-            </details>
-            <details>
-                <summary>Tuve un problema con el pago</summary>
-                <p>Envíanos un mail a <strong>soporte@eventospro.com</strong> con tu DNI y lo resolvemos al instante.</p>
-            </details>
+            <details><summary>¿Cómo obtengo mi entrada?</summary><p>Al pagar, el sistema genera un Código VIP. Guárdalo y díctalo en la puerta de seguridad.</p></details>
+            <details><summary>¿Qué métodos de pago aceptan?</summary><p>Aceptamos MercadoPago, Tarjetas y Transferencias. El comprobante llega a tu email.</p></details>
+            <details><summary>Tuve un problema con el pago</summary><p>Envíanos un mail a <strong>soporte@eventospro.com</strong> con tu DNI y lo resolvemos al instante.</p></details>
         </div>
     </div>
 
@@ -113,12 +124,10 @@
         <div class="modal-content" style="text-align: center; border-top: 6px solid #23d5ab;">
             <h2 style="color: #23d5ab; margin-top: 10px;">¡Inscripción Exitosa! 🎉</h2>
             <p style="font-size: 16px;">Monto Pagado: $<span id="ticketMonto" style="font-weight: bold;"></span></p>
-            
             <div style="background: #f1f1f1; padding: 20px; border-radius: 10px; margin: 25px 0; border: 2px dashed #bbb;">
                 <p style="margin: 0; color: #666; font-size: 14px;">Tu Código de Acceso VIP</p>
                 <h1 id="ticketCodigo" style="color: #e94560; letter-spacing: 3px; margin: 10px 0; font-size: 32px;"></h1>
             </div>
-            
             <p style="font-size: 13px; color: #888; margin-bottom: 20px;">Presentá este código a la seguridad en la puerta del evento.</p>
             <button onclick="cerrarModal('modalExito')" style="background: #2c3e50;">Aceptar y Cerrar</button>
         </div>

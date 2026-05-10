@@ -81,7 +81,7 @@ CREATE PROCEDURE registrar_reserva(
 BEGIN
     DECLARE v_capacidad_actual INT;
 
-    -- Iniciamos transacción y bloqueamos fila
+ -- Iniciamos transacción y bloqueamos fila
     START TRANSACTION;
     SELECT capacidad_maxima INTO v_capacidad_actual 
     FROM eventos WHERE id = p_id_evento FOR UPDATE;
@@ -113,7 +113,7 @@ END //
 
 DELIMITER ;
 
--- DATOS DE PRUEBA (Todos los eventos en un solo bloque)
+-- DATOS DE PRUEBA
 INSERT INTO eventos (nombre, descripcion, id_categoria, fecha, hora_inicio, hora_fin, lugar, capacidad_maxima, precio, limite_edad, logo_url) VALUES 
 ('Rock en Tucumán', 'Bandas locales en vivo', 1, '2026-06-15', '21:00', '02:00', 'Club Floresta', 500, 15000, 18, 'https://loremflickr.com/800/600/concert,rock'),
 ('Jazz Night', 'Noche de jazz y blues', 1, '2026-06-20', '20:00', '23:30', 'Teatro San Martín', 200, 12000, 13, 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?q=80&w=800'),
