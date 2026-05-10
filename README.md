@@ -136,6 +136,15 @@ npm start
 4. El backend procesa la petición, verifica el cupo y confirma la transacción.
 5. El cupo del evento disminuye automáticamente.
 
+## 👑 Usuario Administrador (Para pruebas del ABM)
+El sistema cuenta con una función de **Auto-Seed** en el servidor Node.js. Al ejecutar `npm start`, el servidor verifica si existe un administrador en la base de datos; si no existe, lo crea y encripta su contraseña automáticamente.
+
+Para probar la creación de eventos (ABM), iniciá sesión con:
+* **Email:** `admin123@gmail.com`
+* **Contraseña:** `admin123`
+
+*(Al ingresar con esta cuenta, se habilitará el botón "➕ Crear Evento" en la barra de navegación).*
+
 ## 👤 Autor
 
 **TP3 — Programación 3**
