@@ -44,7 +44,7 @@ async function crearAdminPorDefecto() {
                 'UPDATE usuarios SET password_hash = ?, rol = ? WHERE email = "admin123@gmail.com"',
                 [hash, 'administrador']
             );
-            console.log('🔧 Cuenta Administrador reparada. La clave ahora es 100% "admin123"');
+            console.log('🔧 Cuenta Administrador reparada. La clave es "admin123"');
         }
     } catch (error) {
         console.error('Error al crear o reparar el admin:', error);
