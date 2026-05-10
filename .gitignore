@@ -1,3 +1,4 @@
 // Aqui agregamos los archivos que ignorara git (para no subirlos a github)
 node_modules/
 .env
+*.log
